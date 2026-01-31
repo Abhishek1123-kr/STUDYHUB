@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import About from '@/pages/About';
+
 
 // Pages
 import Index from "./pages/Index";
@@ -32,6 +34,7 @@ const App = () => (
             {/* Public Routes */}
             <Route path="/" element={<Index />} />
             <Route path="/courses" element={<Courses />} />
+            <Route path="/about" element={<About />} />
             <Route path="/courses/:courseId" element={<CourseSemesters />} />
             <Route path="/courses/:courseId/semesters/:semesterId" element={<SemesterSubjects />} />
             <Route path="/courses/:courseId/semesters/:semesterId/subjects/:subjectId" element={<SubjectMaterials />} />

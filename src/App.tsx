@@ -6,8 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import About from '@/pages/About';
-
-// Pages
+// Pages\\\
 import Index from "./pages/Index";
 import Courses from "./pages/Courses";
 import CourseSemesters from "./pages/CourseSemesters";

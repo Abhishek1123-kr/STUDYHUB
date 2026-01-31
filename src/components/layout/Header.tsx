@@ -46,6 +46,16 @@ export function Header() {
           >
             Courses
           </Link>
+
+          <Link
+            to="/About"
+            className={`text-sm font-medium transition-colors hover:text-primary ${
+              location.pathname.startsWith('/About') ? 'text-primary' : 'text-muted-foreground'
+            }`}
+          >
+            About
+          </Link>
+
           {isAdmin && (
             <Link
               to="/admin"

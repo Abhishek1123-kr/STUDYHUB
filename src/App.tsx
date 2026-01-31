@@ -7,7 +7,6 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import About from '@/pages/About';
 
-
 // Pages
 import Index from "./pages/Index";
 import Courses from "./pages/Courses";

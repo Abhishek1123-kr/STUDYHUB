@@ -48,9 +48,9 @@ export function Header() {
           </Link>
 
           <Link
-            to="/About"
+            to="/about"
             className={`text-sm font-medium transition-colors hover:text-primary ${
-              location.pathname.startsWith('/About') ? 'text-primary' : 'text-muted-foreground'
+              location.pathname.startsWith('/about') ? 'text-primary' : 'text-muted-foreground'
             }`}
           >
             About

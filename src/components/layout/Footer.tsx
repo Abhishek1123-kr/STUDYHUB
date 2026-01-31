@@ -58,8 +58,6 @@ export function Footer() {
                 <a href="https://github.com/rachitparashar7" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
                   rachitparashar7
                 </a>
-                
-
               </li>
             </ul>
           </div>

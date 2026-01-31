@@ -49,7 +49,7 @@ const About = () => {
             className="text-center"
           >
             <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">
-                StudyHub
+              About StudyHub
             </h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               StudyHub is a centralized academic platform designed to help BTech
@@ -66,16 +66,15 @@ const About = () => {
               transition={{ duration: 0.8 }}
             >
               <h2 className="text-2xl font-semibold mb-4">
-                Project Overview
+                Overview
               </h2>
               <p className="text-gray-700 leading-relaxed">
                 This project was developed to solve the problem of scattered
                 academic resources. StudyHub organizes courses by branch,
                 semesters, subjects, and chapters, providing a smooth and
                 intuitive learning experience.
-              </p>
-              <p className="text-gray-700 leading-relaxed">
-                Disclaimer:<br />
+                <br/>
+                Disclaimer:<br/>
                 StudyHub is a student-developed academic project created for educational purposes only.
                 All study materials shared on this platform are collected from publicly available sources
                 or provided by students for learning reference. The ownership of all materials belongs

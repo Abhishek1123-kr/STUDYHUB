@@ -22,7 +22,9 @@ export function Footer() {
     </Link>
             <p className="text-muted-foreground text-sm max-w-md">
               Your centralized portal for BTech CSE study materials. Access assignments, notes, PPTs, 
-              lab manuals, and more for all your courses in one place.
+              lab manuals, and more for all your courses in one place.<br />
+              For educational and non-commercial use only.
+
             </p>
           </div>
 
@@ -53,7 +55,9 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Github className="h-4 w-4" />
-                github.com/studyhub
+                <Link to="https://github.com/rachitparashar7" className="hover:text-primary transition-colors">
+                  https://github.com/rachitparashar7
+                </Link>
               </li>
             </ul>
           </div>

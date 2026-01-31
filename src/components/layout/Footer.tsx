@@ -55,9 +55,9 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Github className="h-4 w-4" />
-                <Link to="https://github.com/rachitparashar7" className="hover:text-primary transition-colors">
-                  https://github.com/rachitparashar7
-                </Link>
+                <a href="https://github.com/rachitparashar7" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">
+                  rachitparashar7
+                </a>
               </li>
             </ul>
           </div>

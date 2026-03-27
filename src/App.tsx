@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import About from '@/pages/About';
+import { SpeedInsights } from "@vercel/speed-insights/next";
 // Pages\\\
 import Index from "./pages/Index";
 import Courses from "./pages/Courses";
@@ -18,6 +19,7 @@ import ManageCourses from "./pages/admin/ManageCourses";
 import ManageSubjects from "./pages/admin/ManageSubjects";
 import ManageMaterials from "./pages/admin/ManageMaterials";
 import NotFound from "./pages/NotFound";
+
 
 const queryClient = new QueryClient();
 

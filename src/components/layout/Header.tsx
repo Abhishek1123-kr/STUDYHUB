@@ -74,7 +74,15 @@ export function Header() {
           {user ? (
             <div className="flex items-center gap-3">
               <span className="text-sm text-muted-foreground">{user.email}</span>
-              <Button variant="outline" size="sm" onClick={signOut}>
+              <Button variant="outline" size="sm" onClick={async () => {
+                if (confirm('Are you sure you want to sign out?')) {
+                  try {
+                    await signOut();
+                  } catch (err) {
+                    alert('Sign out failed: ' + (err as Error).message);
+                  }
+                }
+              }}>
                 Sign Out
               </Button>
             </div>
@@ -133,9 +141,18 @@ export function Header() {
             )}
             <div className="border-t border-border pt-3 mt-2">
               {user ? (
-                <Button variant="outline" size="sm" className="w-full" onClick={() => { signOut(); setIsMenuOpen(false); }}>
-                  Sign Out
-                </Button>
+                  <Button variant="outline" size="sm" className="w-full" onClick={async () => {
+                    setIsMenuOpen(false);
+                    if (confirm('Are you sure you want to sign out?')) {
+                      try {
+                        await signOut();
+                      } catch (err) {
+                        alert('Sign out failed: ' + (err as Error).message);
+                      }
+                    }
+                  }}>
+                    Sign Out
+                  </Button>
               ) : (
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="outline" size="sm" className="w-full">

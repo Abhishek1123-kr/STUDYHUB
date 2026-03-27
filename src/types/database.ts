@@ -33,6 +33,7 @@ export interface Subject {
   order_index: number;
   created_at: string;
   updated_at: string;
+  branches: string[];
 }
 
 export interface Material {

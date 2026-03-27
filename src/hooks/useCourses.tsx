@@ -77,7 +77,25 @@ export function useSubjects(semesterId: string | undefined) {
   return useQuery({
     queryKey: ['subjects', semesterId],
     queryFn: async () => {
+      console.log('📚 Subjects query for semester:', semesterId);
       if (!semesterId) return [];
+      
+      // Get current user session for branch and admin status
+      const { data: { session } } = await supabase.auth.getSession();
+      const user = session?.user;
+      const branch = (user?.user_metadata as any)?.branch as string | undefined;
+      
+      let isAdmin = false;
+      if (user) {
+        const { data: adminData } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .eq('role', 'admin')
+          .maybeSingle();
+        isAdmin = !!adminData;
+      }
+      console.log('📚 User auth:', { branch, isAdmin });
       
       // 1. Fetch current semester details
       const { data: currentSemData, error: semError } = await supabase
@@ -130,9 +148,20 @@ export function useSubjects(semesterId: string | undefined) {
 
       const uniqueSubjects = Array.from(
         new Map(sortedData.map((item) => [item.code, item])).values()
-      );
+      ) as Subject[];
       
-      return uniqueSubjects as Subject[];
+      // 5. Branch filtering (skip for admin or no branch)
+      let filteredSubjects = uniqueSubjects;
+      if (branch && !isAdmin) {
+        filteredSubjects = uniqueSubjects.filter((subject: Subject) => 
+          subject.branches && (subject.branches.includes('ALL') || subject.branches.includes(branch))
+        );
+        console.log('📚 Branch filtered subjects:', filteredSubjects.length, '/ original', uniqueSubjects.length, 'for branch:', branch);
+      } else {
+        console.log('📚 No branch filter (admin/guest):', uniqueSubjects.length);
+      }
+      
+      return filteredSubjects;
     },
     enabled: !!semesterId,
   });

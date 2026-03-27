@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/lib/database';
+import { Link } from 'react-router-dom';
+import { Shield } from 'lucide-react';
 
 const About = () => {
   // Contact form state
@@ -126,6 +128,37 @@ const About = () => {
                 <Badge key={tech}>{tech}</Badge>
               ))}
             </div>
+          </motion.div>
+
+          {/* ================= ADMIN PANEL ACCESS ================= */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8 }}
+            className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-8 shadow-2xl border border-border/50 max-w-4xl mx-auto"
+          >
+            <div className="text-center mb-8">
+              <Shield className="h-16 w-16 mx-auto mb-4 text-primary opacity-80" />
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mb-4">
+                Admin Panel
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+                Authorized administrators can manage courses, subjects, semesters, and upload study materials.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link to="/login">
+                <Button size="lg" className="text-lg px-8 font-semibold shadow-lg hover:shadow-xl">
+                  🔐 Admin Login
+                </Button>
+              </Link>
+              <Button variant="outline" size="lg" className="text-lg px-8 font-semibold border-2">
+                Contact Admin
+              </Button>
+            </div>
+            <p className="text-center text-sm text-muted-foreground mt-6">
+              Secure access only • Role-based permissions
+            </p>
           </motion.div>
 
           {/* ================= GET IN TOUCH SECTION ================= */}

@@ -129,15 +129,31 @@ useEffect(() => {
   const signOut = async () => {
     console.log('🔐 signOut: Called');
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.error('🔐 signOut error:', error);
-        throw error;
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) {
+        console.error('🔐 supabase.auth.signOut error:', signOutError);
       }
-      console.log('🔐 signOut: Success');
+
+      // Note: removeSession not available in client - skip
+      console.log('🔐 Skipped removeSession (client-side)');
+      
+      // Force state reset
+      setSession(null);
+      setUser(null);
       setIsAdmin(false);
+      
+      console.log('🔐 signOut: Cleared local state');
+
+      // Prod: Force reload after delay to ensure session fully cleared
+      if (import.meta.env.PROD) {
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
+      }
     } catch (err) {
       console.error('🔐 signOut failed:', err);
+      // Fallback reload
+      window.location.href = '/';
       throw err;
     }
   };

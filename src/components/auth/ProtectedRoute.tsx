@@ -1,6 +1,7 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -8,13 +9,55 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRouteProps) {
-  // Bypass authentication in development mode
-  if (import.meta.env.DEV) {
-    return <>{children}</>;
-  }
-
   const { user, isAdmin, isLoading } = useAuth();
   const location = useLocation();
+
+  // Debug logs
+  console.log('🔒 ProtectedRoute:', { 
+    requireAdmin, 
+    hasUser: !!user, 
+    isAdmin, 
+    pathname: location.pathname,
+    env: import.meta.env.MODE 
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    console.log('🔒 No user, redirect to login');
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (requireAdmin && !isAdmin) {
+    if (import.meta.env.DEV) {
+      console.log('🔒 DEV: Bypassing admin check for testing');
+      return <>{children}</>;
+    }
+    
+    console.log('🔒 Access denied - not admin');
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="text-center p-8 max-w-md mx-auto bg-background rounded-lg border shadow-lg">
+          <h1 className="text-2xl font-bold mb-4 text-destructive">Access Denied</h1>
+          <p className="text-muted-foreground mb-8">
+            Admin privileges required for this page. Contact administrator if you believe this is an error.
+          </p>
+          <Button asChild>
+            <Link to="/" className="w-full">Go Home</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  console.log('🔒 Access granted');
+  return <>{children}</>;
 
   if (isLoading) {
     return (
@@ -28,16 +71,8 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (requireAdmin && !isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
-          <p className="text-muted-foreground">You don't have permission to access this page.</p>
-        </div>
-      </div>
-    );
-  }
+  // Removed duplicate check - handled above
+
 
   return <>{children}</>;
 }

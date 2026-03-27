@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useCourses, useSemesters, useSubjects, useDeleteSubject } from '@/hooks/useCourses';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
-import { Plus, Trash2, Loader2 } from 'lucide-react';
+import { Plus, Pencil, Trash2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -32,6 +32,7 @@ const ManageSubjects = () => {
   
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [editingSubjectId, setEditingSubjectId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     code: '',
@@ -48,27 +49,56 @@ const ManageSubjects = () => {
     setIsSaving(true);
 
     try {
-      const { error } = await supabase
-        .from('subjects')
-        .insert({
-          name: formData.name,
-          code: formData.code,
-          description: formData.description,
-          credits: formData.credits,
-          semester_id: selectedSemesterId,
-        });
+      if (editingSubjectId) {
+        // Update existing
+        const { error } = await supabase
+          .from('subjects')
+          .update({
+            name: formData.name,
+            code: formData.code,
+            description: formData.description,
+            credits: formData.credits,
+          })
+          .eq('id', editingSubjectId);
 
-      if (error) throw error;
+        if (error) throw error;
+        toast.success('Subject updated successfully');
+      } else {
+        // Create new
+        const { error } = await supabase
+          .from('subjects')
+          .insert({
+            name: formData.name,
+            code: formData.code,
+            description: formData.description,
+            credits: formData.credits,
+            semester_id: selectedSemesterId,
+          });
 
-      toast.success('Subject created successfully');
+        if (error) throw error;
+        toast.success('Subject created successfully');
+      }
+
       queryClient.invalidateQueries({ queryKey: ['subjects'] });
       setIsDialogOpen(false);
+      setEditingSubjectId(null);
       setFormData({ name: '', code: '', description: '', credits: 3 });
     } catch (error: any) {
-      toast.error(error.message || 'Failed to create subject');
+      toast.error(error.message || 'Failed to save subject');
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleEdit = (subject: any) => {
+    setEditingSubjectId(subject.id);
+    setFormData({
+      name: subject.name,
+      code: subject.code || '',
+      description: subject.description || '',
+      credits: subject.credits || 3,
+    });
+    setIsDialogOpen(true);
   };
 
   const handleDelete = async (subjectId: string, subjectName: string) => {
@@ -103,15 +133,15 @@ const ManageSubjects = () => {
           </div>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2" disabled={!selectedSemesterId}>
-                <Plus className="h-4 w-4" />
-                Add Subject
-              </Button>
-            </DialogTrigger>
+                <DialogTrigger asChild>
+                  <Button className="gap-2" disabled={!selectedSemesterId}>
+                    <Plus className="h-4 w-4" />
+                    {editingSubjectId ? 'Edit Subject' : 'Add Subject'}
+                  </Button>
+                </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Add New Subject</DialogTitle>
+                <DialogTitle>{editingSubjectId ? 'Edit Subject' : 'Add New Subject'}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
@@ -157,7 +187,7 @@ const ManageSubjects = () => {
                 </div>
                 <Button type="submit" className="w-full" disabled={isSaving}>
                   {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Create Subject
+                  {editingSubjectId ? 'Update Subject' : 'Create Subject'}
                 </Button>
               </form>
             </DialogContent>
@@ -221,15 +251,26 @@ const ManageSubjects = () => {
                             {subject.code} • {subject.credits} Credits
                           </p>
                         </div>
-                        <Button 
-                          variant="destructive" 
-                          size="sm" 
-                          className="gap-1"
-                          onClick={() => handleDelete(subject.id, subject.name)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Delete
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="outline" 
+                            size="sm" 
+                            className="gap-1"
+                            onClick={() => handleEdit(subject)}
+                          >
+                            <Pencil className="h-4 w-4" />
+                            Edit
+                          </Button>
+                          <Button 
+                            variant="destructive" 
+                            size="sm" 
+                            className="gap-1"
+                            onClick={() => handleDelete(subject.id, subject.name)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Delete
+                          </Button>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>

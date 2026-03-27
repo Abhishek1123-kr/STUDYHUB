@@ -3,7 +3,7 @@ import { Layout } from '@/components/layout/Layout';
 import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import { MaterialTypeCard } from '@/components/materials/MaterialTypeCard';
 import { MaterialCard } from '@/components/materials/MaterialCard';
-import { useSubject, useMaterials } from '@/hooks/useCourses';
+import { useSubject, useMaterials, useSemester } from '@/hooks/useCourses';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -31,15 +31,16 @@ const SubjectMaterials = () => {
   const selectedType = searchParams.get('type') as MaterialType | null;
 
   const { data: subject, isLoading: subjectLoading } = useSubject(subjectId);
+  const { data: urlSemester, isLoading: semesterLoading } = useSemester(semesterId);
   const { data: materials, isLoading: materialsLoading } = useMaterials(
     subjectId,
     selectedType || undefined
   );
   const { data: allMaterials } = useMaterials(subjectId);
 
-  const isLoading = subjectLoading || materialsLoading;
-  const semester = subject?.semesters;
-  const course = semester?.courses;
+  const isLoading = subjectLoading || materialsLoading || semesterLoading;
+  const semester = urlSemester || subject?.semesters;
+  const course = urlSemester?.courses || semester?.courses;
 
   /* ===============================
      COUNT MATERIALS BY TYPE
@@ -76,7 +77,7 @@ const SubjectMaterials = () => {
         {/* ===============================
             BREADCRUMBS
            =============================== */}
-        {subjectLoading ? (
+        {subjectLoading || semesterLoading ? (
           <Skeleton className="h-6 w-80 mb-6" />
         ) : (
           <Breadcrumbs

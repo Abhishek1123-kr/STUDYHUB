@@ -78,14 +78,61 @@ export function useSubjects(semesterId: string | undefined) {
     queryKey: ['subjects', semesterId],
     queryFn: async () => {
       if (!semesterId) return [];
+      
+      // 1. Fetch current semester details
+      const { data: currentSemData, error: semError } = await supabase
+        .from('semesters')
+        .select('*, courses(*)')
+        .eq('id', semesterId)
+        .single();
+        
+      if (semError) throw semError;
+
+      const currentSem = currentSemData as Semester & { courses: Course };
+      const isCore = currentSem.courses.code === 'CSE';
+      let semesterIds = [semesterId];
+
+      // 2. If it's a branch, find the CSE Core equivalent semester
+      if (!isCore) {
+        const { data: coreCourse } = await supabase
+          .from('courses')
+          .select('id')
+          .eq('code', 'CSE')
+          .single();
+
+        if (coreCourse) {
+          const { data: coreSem } = await supabase
+            .from('semesters')
+            .select('id')
+            .eq('course_id', coreCourse.id)
+            .eq('number', currentSem.number)
+            .single();
+
+          if (coreSem) semesterIds.push(coreSem.id);
+        }
+      }
+
+      // 3. Fetch subjects for both Core and Branch
       const { data, error } = await supabase
         .from('subjects')
         .select('*')
-        .eq('semester_id', semesterId)
+        .in('semester_id', semesterIds)
         .order('order_index');
-      
+        
       if (error) throw error;
-      return data as Subject[];
+
+      // 4. Merge & deduplicate by subject code, prioritizing branch subjects over core
+      const sortedData = data.sort((a, b) => {
+        if (a.semester_id === semesterId && b.semester_id !== semesterId) return 1;
+        if (a.semester_id !== semesterId && b.semester_id === semesterId) return -1;
+        return (a.order_index || 0) - (b.order_index || 0);
+      });
+
+      const uniqueSubjects = Array.from(
+        new Map(sortedData.map((item) => [item.code, item])).values()
+      );
+      
+      return uniqueSubjects as Subject[];
     },
     enabled: !!semesterId,
   });

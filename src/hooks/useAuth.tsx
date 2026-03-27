@@ -74,12 +74,13 @@ useEffect(() => {
       }
     );
 
+    console.log('🔐 Refresh debug: localStorage auth token exists?', !!localStorage.getItem('sb-' + (import.meta.env.VITE_SUPABASE_URL?.split('/')[3] || 'unknown') + '-auth-token'));
     // THEN get initial session
     supabase.auth.getSession().then(async ({ data: { session }, error }) => {
       if (error) {
-        console.error('🔐 useAuth: getSession error:', error);
+      console.error('🔐 useAuth: getSession error:', error);
       } else {
-        console.log('🔐 useAuth: Initial session:', session?.user?.email || 'no session');
+        console.log('🔐 useAuth: Initial session RESTORED:', session?.user?.email || 'no session');
         setSession(session);
         setUser(session?.user ?? null);
         

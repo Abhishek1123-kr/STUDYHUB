@@ -1,3 +1,4 @@
+
 export type MaterialType = 'assignment' | 'ppt' | 'notes' | 'lab_manual' | 'syllabus' | 'other';
 
 export interface Course {

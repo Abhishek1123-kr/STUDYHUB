@@ -48,7 +48,10 @@ useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        console.log('🔐 useAuth: Auth state change:', event, session?.user?.email || 'no user');
+      console.log('🔐 useAuth: Auth state change:', event, session?.user?.email || 'no user');
+      if (event === 'SIGNED_OUT') {
+        console.log('🔐 SIGNED_OUT event received, state should update');
+      }
         setSession(session);
         setUser(session?.user ?? null);
         

@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GraduationCap, Menu, X, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, isAdmin, signOut } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
@@ -78,6 +79,8 @@ export function Header() {
                 if (confirm('Are you sure you want to sign out?')) {
                   try {
                     await signOut();
+                    navigate('/', { replace: true });
+                    console.log('🧭 Navigated to home after sign out');
                   } catch (err) {
                     alert('Sign out failed: ' + (err as Error).message);
                   }
@@ -146,6 +149,8 @@ export function Header() {
                     if (confirm('Are you sure you want to sign out?')) {
                       try {
                         await signOut();
+                        navigate('/', { replace: true });
+                        console.log('🧭 Navigated to home after sign out (mobile)');
                       } catch (err) {
                         alert('Sign out failed: ' + (err as Error).message);
                       }

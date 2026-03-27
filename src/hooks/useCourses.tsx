@@ -11,8 +11,10 @@ export function useCourses() {
         .select('*')
         .order('order_index');
       
+      console.log('📚 Courses query - data count:', data?.length || 0, 'error:', error?.message || 'none');
       if (error) throw error;
       return data as Course[];
+
     },
   });
 }

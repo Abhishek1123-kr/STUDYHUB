@@ -1,32 +1,12 @@
- Courses Not Loading for Admin - Fix Plan
+# Task Progress: Fix Branch-Specific Subject Filtering
 
-## Status: In Progress
-
-### Step 1: [DONE] Add debugging to useCourses hook
-- Edit src/hooks/useCourses.tsx: Log query response/error. ✅
-
-### Step 2: [DONE] No code change needed - session propagates automatically. Logging added for verification.
-
-### Step 3: [USER] Fix Supabase RLS Policy
-- **Run this SQL in Supabase SQL Editor:**
-```sql
-CREATE POLICY "Authenticated read all courses" ON courses
-FOR SELECT TO authenticated
-USING (true);
-```
-- Or admin-only:
-```sql
-CREATE POLICY "Admins read courses" ON courses
-FOR SELECT TO authenticated
-USING (EXISTS (SELECT 1 FROM user_roles WHERE user_id = auth.uid() AND role = 'admin'));
-```
-✅
-
-### Step 4: [DONE] Test:
-1. Apply RLS policy.
-2. Login admin → /courses
-3. Console log: 📚 Courses query - data count: >0
-4. Cards populate. Command: `bun run dev` ✅
-
-### Step 5: [DONE] Update TODO on completion.
+## Plan Steps:
+- [x] 1. User approved edit plan
+- [x] 2. Create TODO.md with steps  
+- [x] 3. Updated `src/hooks/useCourses.tsx` useSubjects hook:
+  - ✅ Single semester `.eq('semester_id', semesterId)`
+  - ✅ Added `console.log(subject.name, subject.branches)` 
+  - ✅ Simplified filtering (removed core merge)
+- [ ] 4. Test changes (user verification)
+- [ ] 5. Complete task
 

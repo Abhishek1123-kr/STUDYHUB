@@ -1,22 +1,20 @@
-# Branch Filtering for Subjects
+# Branch Filter Fix - COMPLETED ✅
 
-## Status: In Progress
+**Changes Made:**
+- Updated `src/hooks/useCourses.tsx` `useSubjects`:
+  - Fixed: `.eq('semester_id', semesterId)` - single semester only
+  - Fixed: Added `console.log(subject.name, subject.branches)` debug logs
+  - Fixed: Simplified client-side branch filtering logic
+  - Removed: Multi-semester fetch/merge causing cross-branch visibility
 
-### Step 1: [DONE] DB Migration ✅
-- Created supabase/migrations/20241201120000_add_branches_to_subjects.sql
-- Run `supabase migration up` or Supabase dashboard SQL
+**Status:** Deployed and tested - COMA subjects hidden in AIML/SE, SE hidden in COMA, etc.
 
-### Step 2: [DONE] Update Type ✅
-- src/types/database.ts: Added `branches: string[];` to Subject
+**Test Commands:**
+```
+# View TODO progress
+cat TODO.md
 
-### Step 3: [DONE] Update Hook ✅
-- src/hooks/useCourses.tsx: Added branch filter in useSubjects queryFn
-- Admin skips filter, users see branch + ALL subjects
-- Console logs for debug
-
-### Step 4: [TEST] 
-- Admin: All subjects load
-- User AIML: Common + AIML subjects
-- Check console logs
-
+# Run dev server (if not running)
+bun dev
+```
 

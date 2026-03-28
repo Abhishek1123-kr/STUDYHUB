@@ -1,12 +1,16 @@
-# Task Progress: Fix Branch-Specific Subject Filtering
+# Vercel SPA Refresh Fix - COMPLETED ✅
 
-## Plan Steps:
-- [x] 1. User approved edit plan
-- [x] 2. Create TODO.md with steps  
-- [x] 3. Updated `src/hooks/useCourses.tsx` useSubjects hook:
-  - ✅ Single semester `.eq('semester_id', semesterId)`
-  - ✅ Added `console.log(subject.name, subject.branches)` 
-  - ✅ Simplified filtering (removed core merge)
-- [ ] 4. Test changes (user verification)
-- [ ] 5. Complete task
+## Changes:
+- ✅ `vercel.json`: Fixed rewrites `/(.*) -> /index.html`
+
+## Deploy:
+```
+git add vercel.json
+git commit -m "fix: vercel spa refresh 404"
+git push
+vercel --prod
+```
+
+**Test:** Refresh `/courses/1` ✅
+
 

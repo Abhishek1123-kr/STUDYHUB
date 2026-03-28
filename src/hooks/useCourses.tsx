@@ -80,7 +80,7 @@ export function useSubjects(semesterId: string | undefined) {
       console.log('📚 Subjects query for semester:', semesterId);
       if (!semesterId) return [];
       
-      // Get current user session for branch and admin status
+      // Get current user session
       const { data: { session } } = await supabase.auth.getSession();
       const user = session?.user;
       const branch = (user?.user_metadata as any)?.branch as string | undefined;
@@ -95,22 +95,24 @@ export function useSubjects(semesterId: string | undefined) {
           .maybeSingle();
         isAdmin = !!adminData;
       }
+
       console.log('📚 User auth:', { branch, isAdmin });
-      
-      // 1. Fetch current semester details
+
+      // 1. Get current semester
       const { data: currentSemData, error: semError } = await supabase
         .from('semesters')
         .select('*, courses(*)')
         .eq('id', semesterId)
         .single();
-        
+
       if (semError) throw semError;
 
       const currentSem = currentSemData as Semester & { courses: Course };
       const isCore = currentSem.courses.code === 'CSE';
+
       let semesterIds = [semesterId];
 
-      // 2. If it's a branch, find the CSE Core equivalent semester
+      // 2. Add core semester if not core
       if (!isCore) {
         const { data: coreCourse } = await supabase
           .from('courses')
@@ -130,37 +132,47 @@ export function useSubjects(semesterId: string | undefined) {
         }
       }
 
-      // 3. Fetch subjects for both Core and Branch
+      // 3. Fetch all subjects (core + branch)
       const { data, error } = await supabase
         .from('subjects')
         .select('*')
         .in('semester_id', semesterIds)
         .order('order_index');
-        
+
       if (error) throw error;
 
-      // 4. Merge & deduplicate by subject code, prioritizing branch subjects over core
-      const sortedData = data.sort((a, b) => {
-        if (a.semester_id === semesterId && b.semester_id !== semesterId) return 1;
-        if (a.semester_id !== semesterId && b.semester_id === semesterId) return -1;
-        return (a.order_index || 0) - (b.order_index || 0);
+      // ✅ 4. FIXED MERGE LOGIC (IMPORTANT)
+      const branchSubjects = data.filter(s => s.semester_id === semesterId);
+      const coreSubjects = data.filter(s => s.semester_id !== semesterId);
+
+      const subjectMap = new Map();
+
+      // Priority: branch subjects
+      branchSubjects.forEach(sub => {
+        subjectMap.set(sub.code, sub);
       });
 
-      const uniqueSubjects = Array.from(
-        new Map(sortedData.map((item) => [item.code, item])).values()
-      ) as Subject[];
-      
-      // 5. Branch filtering (skip for admin or no branch)
+      // Add core only if not present
+      coreSubjects.forEach(sub => {
+        if (!subjectMap.has(sub.code)) {
+          subjectMap.set(sub.code, sub);
+        }
+      });
+
+      const uniqueSubjects = Array.from(subjectMap.values());
+
+      // ✅ 5. FINAL FILTER (IMPORTANT)
       let filteredSubjects = uniqueSubjects;
+
       if (branch && !isAdmin) {
-        filteredSubjects = uniqueSubjects.filter((subject: Subject) => 
-          subject.branches && (subject.branches.includes('ALL') || subject.branches.includes(branch))
+        filteredSubjects = uniqueSubjects.filter((subject: Subject) =>
+          subject.branches &&
+          (subject.branches.includes('ALL') || subject.branches.includes(branch))
         );
-        console.log('📚 Branch filtered subjects:', filteredSubjects.length, '/ original', uniqueSubjects.length, 'for branch:', branch);
-      } else {
-        console.log('📚 No branch filter (admin/guest):', uniqueSubjects.length);
       }
-      
+
+      console.log('📚 Final subjects:', filteredSubjects);
+
       return filteredSubjects;
     },
     enabled: !!semesterId,

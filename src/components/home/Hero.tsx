@@ -28,7 +28,7 @@ export function Hero() {
     <section className="relative min-h-[85vh] flex items-center overflow-hidden py-24 bg-gradient-to-b from-slate-950 via-slate-900 to-background text-white">
       {/* Background Image with Parallax / Fixed feel */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35 mix-blend-luminosity select-none pointer-events-none"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-55 select-none pointer-events-none"
         style={{ backgroundImage: `url('/hero-bg.png')` }}
       />
       

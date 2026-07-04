@@ -293,3 +293,43 @@ export function useDeleteMaterial() {
     },
   });
 }
+
+export function useIncrementDownload() {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (materialId: string) => {
+      // 1. Try to increment via security definer RPC (recommended)
+      const { error: rpcError } = await supabase
+        .rpc('increment_download_count', { material_id: materialId });
+        
+      if (rpcError) {
+        console.warn('RPC function increment_download_count not found or failed, falling back to direct update:', rpcError.message);
+        
+        // 2. Fallback: Direct database update
+        const { data: material, error: fetchError } = await supabase
+          .from('materials')
+          .select('download_count')
+          .eq('id', materialId)
+          .single();
+          
+        if (fetchError) throw fetchError;
+        
+        const currentCount = material?.download_count || 0;
+        
+        const { error: updateError } = await supabase
+          .from('materials')
+          .update({ download_count: currentCount + 1 })
+          .eq('id', materialId);
+          
+        if (updateError) {
+          throw new Error(`Direct update failed: ${updateError.message}`);
+        }
+      }
+    },
+    onSuccess: () => {
+      // Invalidate queries to fetch updated count from backend
+      queryClient.invalidateQueries({ queryKey: ['materials'] });
+    },
+  });
+}

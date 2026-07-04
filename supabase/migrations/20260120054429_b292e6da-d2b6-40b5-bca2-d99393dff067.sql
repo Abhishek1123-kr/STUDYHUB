@@ -183,4 +183,4 @@ FROM (
 ) AS sub(name, code, description, credits, icon, order_index)
 CROSS JOIN public.semesters sem
 JOIN public.courses c ON sem.course_id = c.id
-WHERE c.code = 'CSE' AND sem.number = 4;
+WHERE c.code = 'CSE' AND sem.number = 5;

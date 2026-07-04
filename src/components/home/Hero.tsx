@@ -74,12 +74,12 @@ export function Hero() {
           </motion.h1>
 
           {/* Description */}
-          {/* <motion.p 
+          <motion.p 
             variants={itemVariants}
             className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
             Access comprehensive, structured study materials. From Operating Systems to 
             Machine Learning, find assignments, notes, PPTs, and lab manuals organized by semester.
-          </motion.p> */}
+          </motion.p> 
 
           {/* CTA Button */}
           <motion.div 

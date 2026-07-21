@@ -21,7 +21,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-muted-foreground text-sm max-w-sm leading-relaxed">
-              Your centralized portal for BTech CSE study materials. Access assignments, notes, PPTs, 
+              Your centralized portal for BTech CSE study materials. Access assignments, notes, PPTs,
               lab manuals, and more for all your courses in one place.
             </p>
             <p className="text-xs text-muted-foreground/60 italic">

@@ -10,7 +10,7 @@ export function useCourses() {
         .from('courses')
         .select('*')
         .order('order_index');
-      
+
       console.log('📚 Courses query - data count:', data?.length || 0, 'error:', error?.message || 'none');
       if (error) throw error;
       return data as Course[];
@@ -29,7 +29,7 @@ export function useCourse(courseId: string | undefined) {
         .select('*')
         .eq('id', courseId)
         .single();
-      
+
       if (error) throw error;
       return data as Course;
     },
@@ -47,7 +47,7 @@ export function useSemesters(courseId: string | undefined) {
         .select('*')
         .eq('course_id', courseId)
         .order('number');
-      
+
       if (error) throw error;
       return data as Semester[];
     },
@@ -65,7 +65,7 @@ export function useSemester(semesterId: string | undefined) {
         .select('*, courses(*)')
         .eq('id', semesterId)
         .single();
-      
+
       if (error) throw error;
       return data as Semester & { courses: Course };
     },
@@ -79,12 +79,12 @@ export function useSubjects(semesterId: string | undefined) {
     queryFn: async () => {
       console.log('📚 Subjects query for semester:', semesterId);
       if (!semesterId) return [];
-      
+
       // Get current user session
       const { data: { session } } = await supabase.auth.getSession();
       const user = session?.user;
       const branch = (user?.user_metadata as any)?.branch as string | undefined;
-      
+
       let isAdmin = false;
       if (user) {
         const { data: adminData } = await supabase
@@ -189,7 +189,7 @@ export function useSubject(subjectId: string | undefined) {
         .select('*, semesters(*, courses(*))')
         .eq('id', subjectId)
         .single();
-      
+
       if (error) throw error;
       return data as Subject & { semesters: Semester & { courses: Course } };
     },
@@ -202,19 +202,19 @@ export function useMaterials(subjectId: string | undefined, materialType?: Mater
     queryKey: ['materials', subjectId, materialType],
     queryFn: async () => {
       if (!subjectId) return [];
-      
+
       let query = supabase
         .from('materials')
         .select('*')
         .eq('subject_id', subjectId)
         .order('created_at', { ascending: false });
-      
+
       if (materialType) {
         query = query.eq('material_type', materialType);
       }
-      
+
       const { data, error } = await query;
-      
+
       if (error) throw error;
       return data as Material[];
     },
@@ -224,14 +224,14 @@ export function useMaterials(subjectId: string | undefined, materialType?: Mater
 
 export function useDeleteCourse() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (courseId: string) => {
       const { error } = await supabase
         .from('courses')
         .delete()
         .eq('id', courseId);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -242,14 +242,14 @@ export function useDeleteCourse() {
 
 export function useDeleteSemester() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (semesterId: string) => {
       const { error } = await supabase
         .from('semesters')
         .delete()
         .eq('id', semesterId);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -260,14 +260,14 @@ export function useDeleteSemester() {
 
 export function useDeleteSubject() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (subjectId: string) => {
       const { error } = await supabase
         .from('subjects')
         .delete()
         .eq('id', subjectId);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -278,14 +278,14 @@ export function useDeleteSubject() {
 
 export function useDeleteMaterial() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (materialId: string) => {
       const { error } = await supabase
         .from('materials')
         .delete()
         .eq('id', materialId);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -296,32 +296,32 @@ export function useDeleteMaterial() {
 
 export function useIncrementDownload() {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (materialId: string) => {
       // 1. Try to increment via security definer RPC (recommended)
       const { error: rpcError } = await supabase
         .rpc('increment_download_count', { material_id: materialId });
-        
+
       if (rpcError) {
         console.warn('RPC function increment_download_count not found or failed, falling back to direct update:', rpcError.message);
-        
+
         // 2. Fallback: Direct database update
         const { data: material, error: fetchError } = await supabase
           .from('materials')
           .select('download_count')
           .eq('id', materialId)
           .single();
-          
+
         if (fetchError) throw fetchError;
-        
+
         const currentCount = material?.download_count || 0;
-        
+
         const { error: updateError } = await supabase
           .from('materials')
           .update({ download_count: currentCount + 1 })
           .eq('id', materialId);
-          
+
         if (updateError) {
           throw new Error(`Direct update failed: ${updateError.message}`);
         }

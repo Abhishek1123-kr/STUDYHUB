@@ -23,7 +23,7 @@ const ManageCourses = () => {
   const { data: courses, isLoading } = useCourses();
   const deleteCourse = useDeleteCourse();
   const queryClient = useQueryClient();
-  
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
@@ -76,11 +76,11 @@ const ManageCourses = () => {
   return (
     <Layout>
       <div className="container py-8">
-        <Breadcrumbs 
+        <Breadcrumbs
           items={[
             { label: 'Admin', href: '/admin' },
             { label: 'Manage Courses' },
-          ]} 
+          ]}
         />
 
         <div className="flex items-center justify-between mb-8">
@@ -162,7 +162,7 @@ const ManageCourses = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div 
+                      <div
                         className="h-12 w-12 rounded-lg flex items-center justify-center text-white font-bold"
                         style={{ backgroundColor: course.color }}
                       >
@@ -178,9 +178,9 @@ const ManageCourses = () => {
                         <Edit className="h-4 w-4" />
                         Edit
                       </Button>
-                      <Button 
-                        variant="destructive" 
-                        size="sm" 
+                      <Button
+                        variant="destructive"
+                        size="sm"
                         className="gap-1"
                         onClick={() => handleDelete(course.id, course.name)}
                       >

@@ -28,7 +28,7 @@ export function SubjectCard({ subject, courseId, semesterId }: SubjectCardProps)
 
   return (
     <Link to={`/courses/${courseId}/semesters/${semesterId}/subjects/${subject.id}`}>
-      <Card 
+      <Card
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         className="group h-full transition-all duration-300 border-border/50 bg-card/65 backdrop-blur-md hover:border-primary/20"
@@ -39,23 +39,22 @@ export function SubjectCard({ subject, courseId, semesterId }: SubjectCardProps)
       >
         <CardHeader className="pb-3 pt-6">
           <div className="flex items-start justify-between">
-            <div 
-              className={`flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-300 ${
-                isHovered ? 'bg-primary/20 scale-110 rotate-3' : 'bg-primary/10'
-              }`}
+            <div
+              className={`flex h-11 w-11 items-center justify-center rounded-xl transition-all duration-300 ${isHovered ? 'bg-primary/20 scale-110 rotate-3' : 'bg-primary/10'
+                }`}
             >
               <IconComponent className="h-5 w-5 text-primary" />
             </div>
-            
-            <Badge 
-              variant="outline" 
+
+            <Badge
+              variant="outline"
               className="text-xs font-semibold px-2.5 py-0.5 rounded-lg border-primary/20 bg-primary/5 text-primary"
             >
               {subject.credits} Credits
             </Badge>
           </div>
         </CardHeader>
-        
+
         <CardContent className="pb-6">
           <div className="mb-2">
             <Badge variant="secondary" className="text-xs font-mono font-medium rounded-md px-2 py-0">

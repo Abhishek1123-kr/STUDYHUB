@@ -82,7 +82,7 @@ export function Features() {
           </p>
         </div>
 
-        <motion.div 
+        <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
@@ -90,7 +90,7 @@ export function Features() {
           viewport={{ once: true, margin: '-100px' }}
         >
           {features.map((feature) => (
-            <motion.div 
+            <motion.div
               key={feature.title}
               variants={itemVariants}
               className="group p-6 rounded-2xl bg-card border border-border/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/20"

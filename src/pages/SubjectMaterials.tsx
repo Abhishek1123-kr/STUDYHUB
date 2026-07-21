@@ -166,9 +166,8 @@ const SubjectMaterials = () => {
                           key={material.id}
                           className="animate-fade-in"
                           style={{
-                            animationDelay: `${
-                              index * 0.1 + matIndex * 0.05
-                            }s`,
+                            animationDelay: `${index * 0.1 + matIndex * 0.05
+                              }s`,
                           }}
                         >
                           <MaterialCard material={material} />

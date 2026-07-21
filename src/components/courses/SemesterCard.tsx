@@ -15,18 +15,17 @@ export function SemesterCard({ semester, courseId }: SemesterCardProps) {
   const isActive = semester.is_active;
 
   return (
-    <Link 
+    <Link
       to={isActive ? `/courses/${courseId}/semesters/${semester.id}` : '#'}
       className={!isActive ? 'cursor-not-allowed pointer-events-none' : ''}
     >
-      <Card 
+      <Card
         onMouseEnter={() => isActive && setIsHovered(true)}
         onMouseLeave={() => isActive && setIsHovered(false)}
-        className={`group h-full transition-all duration-300 border-border/50 bg-card/65 backdrop-blur-md overflow-hidden ${
-          isActive 
-            ? 'cursor-pointer hover:border-primary/20' 
+        className={`group h-full transition-all duration-300 border-border/50 bg-card/65 backdrop-blur-md overflow-hidden ${isActive
+            ? 'cursor-pointer hover:border-primary/20'
             : 'opacity-50 border-dashed border-2 bg-muted/10'
-        }`}
+          }`}
         style={{
           transform: isHovered ? 'translateY(-4px)' : 'none',
           boxShadow: isHovered ? '0 12px 30px -4px rgba(99, 102, 241, 0.12), 0 4px 10px -2px rgba(99, 102, 241, 0.06)' : 'none',
@@ -34,11 +33,10 @@ export function SemesterCard({ semester, courseId }: SemesterCardProps) {
       >
         <CardContent className="p-6">
           <div className="flex items-center justify-between mb-5">
-            <div className={`flex h-12 w-12 items-center justify-center rounded-xl font-display text-xl font-bold transition-all duration-300 ${
-              isActive 
-                ? 'bg-primary/10 text-primary scale-100 group-hover:scale-110' 
+            <div className={`flex h-12 w-12 items-center justify-center rounded-xl font-display text-xl font-bold transition-all duration-300 ${isActive
+                ? 'bg-primary/10 text-primary scale-100 group-hover:scale-110'
                 : 'bg-muted text-muted-foreground'
-            }`}>
+              }`}>
               {semester.number}
             </div>
 
@@ -54,18 +52,17 @@ export function SemesterCard({ semester, courseId }: SemesterCardProps) {
               </Badge>
             )}
           </div>
-          
-          <h3 className={`font-display font-bold text-lg mb-2 transition-colors ${
-            isActive ? 'group-hover:text-primary' : 'text-muted-foreground'
-          }`}>
+
+          <h3 className={`font-display font-bold text-lg mb-2 transition-colors ${isActive ? 'group-hover:text-primary' : 'text-muted-foreground'
+            }`}>
             {semester.name}
           </h3>
-          
+
           <div className="flex items-center gap-2 text-sm text-muted-foreground/80 mb-5">
             <Calendar className="h-4 w-4 text-muted-foreground/60" />
             <span>Semester {semester.number}</span>
           </div>
-          
+
           {isActive && (
             <div className="flex items-center text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
               <span>View Subjects</span>

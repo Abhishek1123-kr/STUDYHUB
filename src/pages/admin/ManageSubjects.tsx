@@ -24,12 +24,12 @@ const ManageSubjects = () => {
   const { data: courses } = useCourses();
   const [selectedCourseId, setSelectedCourseId] = useState<string>('');
   const [selectedSemesterId, setSelectedSemesterId] = useState<string>('');
-  
+
   const { data: semesters } = useSemesters(selectedCourseId);
   const { data: subjects, isLoading } = useSubjects(selectedSemesterId);
   const deleteSubject = useDeleteSubject();
   const queryClient = useQueryClient();
-  
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [editingSubjectId, setEditingSubjectId] = useState<string | null>(null);
@@ -117,11 +117,11 @@ const ManageSubjects = () => {
   return (
     <Layout>
       <div className="container py-8">
-        <Breadcrumbs 
+        <Breadcrumbs
           items={[
             { label: 'Admin', href: '/admin' },
             { label: 'Manage Subjects' },
-          ]} 
+          ]}
         />
 
         <div className="flex items-center justify-between mb-8">
@@ -133,12 +133,12 @@ const ManageSubjects = () => {
           </div>
 
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button className="gap-2" disabled={!selectedSemesterId}>
-                    <Plus className="h-4 w-4" />
-                    {editingSubjectId ? 'Edit Subject' : 'Add Subject'}
-                  </Button>
-                </DialogTrigger>
+            <DialogTrigger asChild>
+              <Button className="gap-2" disabled={!selectedSemesterId}>
+                <Plus className="h-4 w-4" />
+                {editingSubjectId ? 'Edit Subject' : 'Add Subject'}
+              </Button>
+            </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>{editingSubjectId ? 'Edit Subject' : 'Add New Subject'}</DialogTitle>
@@ -252,18 +252,18 @@ const ManageSubjects = () => {
                           </p>
                         </div>
                         <div className="flex gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             className="gap-1"
                             onClick={() => handleEdit(subject)}
                           >
                             <Pencil className="h-4 w-4" />
                             Edit
                           </Button>
-                          <Button 
-                            variant="destructive" 
-                            size="sm" 
+                          <Button
+                            variant="destructive"
+                            size="sm"
                             className="gap-1"
                             onClick={() => handleDelete(subject.id, subject.name)}
                           >

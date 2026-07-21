@@ -23,11 +23,10 @@ export function Header() {
   }, []);
 
   return (
-    <header className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-background/85 backdrop-blur-md border-border/80 shadow-md shadow-primary/5' 
+    <header className={`sticky top-0 z-50 w-full border-b transition-all duration-300 ${isScrolled
+        ? 'bg-background/85 backdrop-blur-md border-border/80 shadow-md shadow-primary/5'
         : 'bg-background/50 backdrop-blur-sm border-border/20'
-    }`}>
+      }`}>
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 transition-all hover:scale-[1.02]">
           <div className="flex items-center justify-center p-1 rounded-xl bg-primary/5 dark:bg-primary/10">
@@ -41,32 +40,29 @@ export function Header() {
             StudyHub
           </span>
         </Link>
-        
+
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
           <Link
             to="/"
-            className={`text-sm font-semibold transition-colors hover:text-primary ${
-              isActive('/') ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            className={`text-sm font-semibold transition-colors hover:text-primary ${isActive('/') ? 'text-primary' : 'text-muted-foreground'
+              }`}
           >
             Home
           </Link>
           <Link
             to="/courses"
-            className={`text-sm font-semibold transition-colors hover:text-primary ${
-              location.pathname.startsWith('/courses') ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            className={`text-sm font-semibold transition-colors hover:text-primary ${location.pathname.startsWith('/courses') ? 'text-primary' : 'text-muted-foreground'
+              }`}
           >
             Courses
           </Link>
 
           <Link
             to="/about"
-            className={`text-sm font-semibold transition-colors hover:text-primary ${
-              location.pathname.startsWith('/about') ? 'text-primary' : 'text-muted-foreground'
-            }`}
+            className={`text-sm font-semibold transition-colors hover:text-primary ${location.pathname.startsWith('/about') ? 'text-primary' : 'text-muted-foreground'
+              }`}
           >
             About
           </Link>
@@ -74,9 +70,8 @@ export function Header() {
           {isAdmin && (
             <Link
               to="/admin"
-              className={`text-sm font-semibold transition-colors hover:text-primary flex items-center gap-1 ${
-                location.pathname.startsWith('/admin') ? 'text-primary' : 'text-muted-foreground'
-              }`}
+              className={`text-sm font-semibold transition-colors hover:text-primary flex items-center gap-1 ${location.pathname.startsWith('/admin') ? 'text-primary' : 'text-muted-foreground'
+                }`}
             >
               <Shield className="h-4 w-4" />
               Admin
@@ -87,7 +82,7 @@ export function Header() {
         {/* Action Buttons: Theme Toggle & Admin Auth */}
         <div className="hidden md:flex items-center gap-4">
           <ThemeToggle />
-          
+
           {user ? (
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-muted-foreground max-w-[120px] truncate">{user.email}</span>
@@ -134,27 +129,24 @@ export function Header() {
             <Link
               to="/"
               onClick={() => setIsMenuOpen(false)}
-              className={`text-sm font-semibold p-2.5 rounded-xl transition-colors ${
-                isActive('/') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent/50'
-              }`}
+              className={`text-sm font-semibold p-2.5 rounded-xl transition-colors ${isActive('/') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent/50'
+                }`}
             >
               Home
             </Link>
             <Link
               to="/courses"
               onClick={() => setIsMenuOpen(false)}
-              className={`text-sm font-semibold p-2.5 rounded-xl transition-colors ${
-                location.pathname.startsWith('/courses') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent/50'
-              }`}
+              className={`text-sm font-semibold p-2.5 rounded-xl transition-colors ${location.pathname.startsWith('/courses') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent/50'
+                }`}
             >
               Courses
             </Link>
             <Link
               to="/about"
               onClick={() => setIsMenuOpen(false)}
-              className={`text-sm font-semibold p-2.5 rounded-xl transition-colors ${
-                location.pathname.startsWith('/about') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent/50'
-              }`}
+              className={`text-sm font-semibold p-2.5 rounded-xl transition-colors ${location.pathname.startsWith('/about') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent/50'
+                }`}
             >
               About
             </Link>
@@ -162,9 +154,8 @@ export function Header() {
               <Link
                 to="/admin"
                 onClick={() => setIsMenuOpen(false)}
-                className={`text-sm font-semibold p-2.5 rounded-xl transition-colors flex items-center gap-2 ${
-                  location.pathname.startsWith('/admin') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent/50'
-                }`}
+                className={`text-sm font-semibold p-2.5 rounded-xl transition-colors flex items-center gap-2 ${location.pathname.startsWith('/admin') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-accent/50'
+                  }`}
               >
                 <Shield className="h-4 w-4" />
                 Admin Panel
@@ -172,20 +163,20 @@ export function Header() {
             )}
             <div className="border-t border-border/40 pt-3 mt-1.5">
               {user ? (
-                  <Button variant="outline" size="sm" className="w-full rounded-xl hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors" onClick={async () => {
-                    setIsMenuOpen(false);
-                    if (confirm('Are you sure you want to sign out?')) {
-                      try {
-                        await signOut();
-                        navigate('/', { replace: true });
-                        console.log('🧭 Navigated to home after sign out (mobile)');
-                      } catch (err) {
-                        alert('Sign out failed: ' + (err as Error).message);
-                      }
+                <Button variant="outline" size="sm" className="w-full rounded-xl hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors" onClick={async () => {
+                  setIsMenuOpen(false);
+                  if (confirm('Are you sure you want to sign out?')) {
+                    try {
+                      await signOut();
+                      navigate('/', { replace: true });
+                      console.log('🧭 Navigated to home after sign out (mobile)');
+                    } catch (err) {
+                      alert('Sign out failed: ' + (err as Error).message);
                     }
-                  }}>
-                    Sign Out
-                  </Button>
+                  }
+                }}>
+                  Sign Out
+                </Button>
               ) : (
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="outline" size="sm" className="w-full rounded-xl">

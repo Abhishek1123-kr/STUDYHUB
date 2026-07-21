@@ -57,7 +57,7 @@ const About = () => {
               <Sparkles className="h-3.5 w-3.5" />
               <span>Centralized Learning Resource</span>
             </div>
-            
+
             <h1 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight">
               About{' '}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
@@ -65,7 +65,7 @@ const About = () => {
               </span>
             </h1>
             <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              StudyHub is a premium academic catalog designed to help BTech CSE students access notes, assignments, 
+              StudyHub is a premium academic catalog designed to help BTech CSE students access notes, assignments,
               syllabus, and lab manuals organized cleanly by semester and subject.
             </p>
           </motion.div>
@@ -88,7 +88,7 @@ const About = () => {
                   Developed to eliminate the friction of searching through messy email threads and chat groups for exam notes, StudyHub acts as a single-source library. All materials are categorized systematically into courses, semesters, subjects, and chapters.
                 </p>
               </div>
-              
+
               <div className="bg-muted/30 border border-border/40 rounded-xl p-4.5 text-xs text-muted-foreground/80 leading-relaxed">
                 <span className="font-bold block text-foreground mb-1 text-xs">Academic Disclaimer</span>
                 StudyHub is a student-led educational directory. Resources are uploaded for reference purposes. Authorship remains with the respective copyright owners. Reach out below to request material updates or take-downs.
@@ -150,7 +150,7 @@ const About = () => {
             <p className="text-muted-foreground max-w-xl mx-auto leading-relaxed text-sm md:text-base">
               Administrators hold the key to study catalogues. Authorised users can manage courses, create syllabus indexes, and upload new materials.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-2">
               <Link to="/login">
                 <Button size="lg" className="px-8 font-semibold rounded-xl btn-shine bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/95 hover:to-indigo-500 shadow-md">
@@ -163,7 +163,7 @@ const About = () => {
                 </Button>
               </a>
             </div>
-            
+
             <p className="text-xs text-muted-foreground/75">
               Strict role-based permissions enforced • Security logs audited
             </p>
@@ -192,7 +192,7 @@ const About = () => {
               {/* Developer Profile card */}
               <div className="p-6 rounded-2xl bg-card border border-border/50 shadow-sm relative overflow-hidden space-y-4">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-xl pointer-events-none" />
-                
+
                 <div className="flex items-center gap-3">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary font-bold text-lg font-display">
                     RP
@@ -202,7 +202,7 @@ const About = () => {
                     <p className="text-xs text-muted-foreground">Full Stack Developer</p>
                   </div>
                 </div>
-                
+
                 <div className="space-y-2 pt-2 border-t border-border/40 text-xs text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Mail className="h-3.5 w-3.5 text-primary/75" />

@@ -41,7 +41,7 @@ const App = () => (
               <Route path="/courses/:courseId/semesters/:semesterId" element={<SemesterSubjects />} />
               <Route path="/courses/:courseId/semesters/:semesterId/subjects/:subjectId" element={<SubjectMaterials />} />
               <Route path="/login" element={<Login />} />
-              
+
               {/* Protected Admin Routes */}
               <Route path="/admin" element={
                 <ProtectedRoute requireAdmin>
@@ -63,7 +63,7 @@ const App = () => (
                   <ManageMaterials />
                 </ProtectedRoute>
               } />
-              
+
               {/* Catch-all */}
               <Route path="*" element={<NotFound />} />
             </Routes>

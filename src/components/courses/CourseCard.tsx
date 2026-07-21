@@ -43,7 +43,7 @@ export function CourseCard({ course }: CourseCardProps) {
 
   return (
     <Link to={`/courses/${course.id}`}>
-      <Card 
+      <Card
         className="group h-full transition-all duration-300 border-border/50 bg-card/65 backdrop-blur-md overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -54,32 +54,32 @@ export function CourseCard({ course }: CourseCardProps) {
         }}
       >
         {/* Dynamic color stripe at the top */}
-        <div 
+        <div
           className="h-1.5 w-full transition-all duration-300"
-          style={{ 
+          style={{
             backgroundColor: defaultColor,
-            opacity: isHovered ? 1 : 0.8 
+            opacity: isHovered ? 1 : 0.8
           }}
         />
-        
+
         <CardHeader className="pb-3 pt-6">
           <div className="flex items-start justify-between">
             {/* Dynamic shape enclosing icon with course theme color background */}
-            <div 
+            <div
               className="flex h-12 w-12 items-center justify-center rounded-xl transition-all duration-300"
-              style={{ 
+              style={{
                 backgroundColor: isHovered ? hexToRgba(defaultColor, 0.15) : subtleBackground,
                 transform: isHovered ? 'scale(1.1) rotate(2deg)' : 'none',
               }}
             >
-              <IconComponent 
+              <IconComponent
                 className="h-6 w-6 transition-colors"
                 style={{ color: defaultColor }}
               />
             </div>
-            
-            <Badge 
-              variant="outline" 
+
+            <Badge
+              variant="outline"
               className="text-xs font-semibold px-2.5 py-0.5 rounded-lg border-border/50 bg-muted/50"
               style={{
                 borderColor: isHovered ? hexToRgba(defaultColor, 0.4) : undefined,
@@ -98,8 +98,8 @@ export function CourseCard({ course }: CourseCardProps) {
           <p className="text-sm text-muted-foreground line-clamp-2 mb-5 leading-relaxed h-10">
             {course.description || 'Explore comprehensive study materials for this course.'}
           </p>
-          
-          <div 
+
+          <div
             className="flex items-center text-sm font-semibold transition-all duration-300"
             style={{ color: defaultColor }}
           >

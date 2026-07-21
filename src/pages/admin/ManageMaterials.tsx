@@ -29,13 +29,13 @@ const ManageMaterials = () => {
   const [selectedCourseId, setSelectedCourseId] = useState<string>('');
   const [selectedSemesterId, setSelectedSemesterId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
-  
+
   const { data: semesters } = useSemesters(selectedCourseId);
   const { data: subjects } = useSubjects(selectedSemesterId);
   const { data: materials, isLoading } = useMaterials(selectedSubjectId);
   const deleteMaterial = useDeleteMaterial();
   const queryClient = useQueryClient();
-  
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -116,11 +116,11 @@ const ManageMaterials = () => {
   return (
     <Layout>
       <div className="container py-8">
-        <Breadcrumbs 
+        <Breadcrumbs
           items={[
             { label: 'Admin', href: '/admin' },
             { label: 'Manage Materials' },
-          ]} 
+          ]}
         />
 
         <div className="flex items-center justify-between mb-8">
@@ -156,15 +156,15 @@ const ManageMaterials = () => {
                 <div className="space-y-2">
                   <label className="block text-sm font-medium">Unit Order</label>
                   <input
-                  type="number"
-                  min={1}
-                  value={orderIndex}
+                    type="number"
+                    min={1}
+                    value={orderIndex}
                     onChange={(e) => setOrderIndex(Number(e.target.value))}
                     className="w-full rounded border px-3 py-2" />
 
                   <Label htmlFor="type">Material Type</Label>
-                  <Select 
-                    value={formData.material_type} 
+                  <Select
+                    value={formData.material_type}
                     onValueChange={(v) => setFormData({ ...formData, material_type: v as MaterialType })}
                   >
                     <SelectTrigger>
@@ -221,9 +221,9 @@ const ManageMaterials = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="space-y-2">
             <Label>Select Course</Label>
-            <Select value={selectedCourseId} onValueChange={(v) => { 
-              setSelectedCourseId(v); 
-              setSelectedSemesterId(''); 
+            <Select value={selectedCourseId} onValueChange={(v) => {
+              setSelectedCourseId(v);
+              setSelectedSemesterId('');
               setSelectedSubjectId('');
             }}>
               <SelectTrigger>
@@ -240,8 +240,8 @@ const ManageMaterials = () => {
           </div>
           <div className="space-y-2">
             <Label>Select Semester</Label>
-            <Select 
-              value={selectedSemesterId} 
+            <Select
+              value={selectedSemesterId}
               onValueChange={(v) => { setSelectedSemesterId(v); setSelectedSubjectId(''); }}
               disabled={!selectedCourseId}
             >
@@ -259,8 +259,8 @@ const ManageMaterials = () => {
           </div>
           <div className="space-y-2">
             <Label>Select Subject</Label>
-            <Select 
-              value={selectedSubjectId} 
+            <Select
+              value={selectedSubjectId}
               onValueChange={setSelectedSubjectId}
               disabled={!selectedSemesterId}
             >
@@ -294,9 +294,9 @@ const ManageMaterials = () => {
                 {materials?.map((material) => (
                   <div key={material.id} className="relative">
                     <MaterialCard material={material} />
-                    <Button 
-                      variant="destructive" 
-                      size="sm" 
+                    <Button
+                      variant="destructive"
+                      size="sm"
                       className="absolute top-4 right-4 gap-1"
                       onClick={() => handleDelete(material.id, material.title)}
                     >

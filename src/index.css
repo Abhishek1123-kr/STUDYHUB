@@ -1,194 +1,196 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* StudyHub Design System - Professional Educational Theme */
+/* StudyHub Design System - GitHub/Linear Inspired Developer Theme */
 
 @layer base {
   :root {
-    /* Premium slate/indigo light palette */
-    --background: 210 40% 98%;
-    --foreground: 224 71% 4%;
+    /* Human-made GitHub Light Slate Palette */
+    --background: 220 14% 97%;       /* #F6F8FA (Soft light grey-white) */
+    --foreground: 220 15% 13%;      /* #1F2328 (Dark charcoal for text) */
 
-    --card: 0 0% 100%;
-    --card-foreground: 224 71% 4%;
+    --card: 0 0% 100%;              /* #FFFFFF (Solid white cards) */
+    --card-foreground: 220 15% 13%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 224 71% 4%;
+    --popover: 0 0% 100%;           /* #FFFFFF */
+    --popover-foreground: 220 15% 13%;
 
-    /* Deep Indigo Primary */
-    --primary: 250 84% 54%;
-    --primary-foreground: 210 40% 98%;
+    /* Solid GitHub Light Active Blue */
+    --primary: 215 95% 51%;         /* #0969DA */
+    --primary-foreground: 0 0% 100%;
 
-    /* Teal Secondary */
-    --secondary: 185 85% 40%;
-    --secondary-foreground: 0 0% 100%;
+    /* GitHub Light Grey Secondary Muted */
+    --secondary: 220 14% 93%;       /* #EAEEF2 */
+    --secondary-foreground: 220 15% 13%;
 
-    --muted: 220 14% 96%;
-    --muted-foreground: 220 9% 46%;
+    --muted: 220 14% 93%;           /* #EAEEF2 */
+    --muted-foreground: 220 10% 45%;  /* #57606A (Muted grey text) */
 
-    /* Amber Accent */
-    --accent: 38 92% 50%;
-    --accent-foreground: 224 71% 4%;
+    /* Secondary Accent (GitHub Green) */
+    --accent: 128 40% 42%;          /* #1A7F37 */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Danger Accent (GitHub Red) */
+    --destructive: 3 85% 47%;       /* #D1242F */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 250 84% 54%;
+    --border: 220 13% 88%;          /* #D0D7DE (Subtle grey borders) */
+    --input: 220 13% 88%;           /* #D0D7DE */
+    --ring: 215 95% 51%;            /* #0969DA */
 
-    --radius: 1rem;
+    --radius: 0.375rem;             /* 6px (matching GitHub standard) */
 
-    /* Custom StudyHub tokens */
-    --gradient-primary: linear-gradient(135deg, hsl(250 84% 54%) 0%, hsl(262 80% 50%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(250 60% 12%) 0%, hsl(222 47% 10%) 50%, hsl(185 85% 15%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(210 40% 99%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(38 92% 50%) 0%, hsl(28 92% 55%) 100%);
-    
-    --shadow-sm: 0 1px 2px 0 hsl(224 71% 4% / 0.03);
-    --shadow-md: 0 4px 12px -2px hsl(224 71% 4% / 0.05), 0 2px 6px -1px hsl(224 71% 4% / 0.03);
-    --shadow-lg: 0 12px 24px -4px hsl(224 71% 4% / 0.06), 0 4px 12px -2px hsl(224 71% 4% / 0.04);
-    --shadow-xl: 0 24px 38px -6px hsl(224 71% 4% / 0.08), 0 8px 18px -4px hsl(224 71% 4% / 0.06);
-    --shadow-glow: 0 0 40px -10px hsl(185 85% 40% / 0.2);
+    /* Standard solid theme gradients for light mode */
+    --gradient-primary: linear-gradient(180deg, hsl(215 95% 51%) 0%, hsl(215 95% 51%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(220 14% 97%) 0%, hsl(220 14% 97%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(0 0% 100%) 100%);
+    --gradient-accent: linear-gradient(180deg, hsl(220 14% 93%) 0%, hsl(220 14% 93%) 100%);
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5% 26%;
-    --sidebar-primary: 250 84% 54%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 5% 96%;
-    --sidebar-accent-foreground: 240 6% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 250 84% 54%;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 12px 16px -4px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    --shadow-xl: 0 24px 32px -8px rgba(0, 0, 0, 0.12), 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+    --shadow-glow: 0 0 0 0 transparent;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 10% 45%;
+    --sidebar-primary: 215 95% 51%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 93%;
+    --sidebar-accent-foreground: 220 15% 13%;
+    --sidebar-border: 220 13% 88%;
+    --sidebar-ring: 215 95% 51%;
   }
 
   .dark {
-    /* Premium deep dark palette */
-    --background: 224 71% 4%;
-    --foreground: 210 40% 98%;
+    /* Human-made GitHub Dark Slate Palette */
+    --background: 220 18% 7%;       /* #0D1117 (Soft slate-black) */
+    --foreground: 210 40% 93%;      /* #E6EDF3 (Soft readable off-white) */
 
-    --card: 224 71% 6%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 18% 11%;            /* #161B22 (Dark grey-blue surfaces) */
+    --card-foreground: 210 40% 93%;
 
-    --popover: 224 71% 6%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 18% 11%;         /* #161B22 */
+    --popover-foreground: 210 40% 93%;
 
-    --primary: 250 95% 76%;
-    --primary-foreground: 224 71% 4%;
+    /* Solid GitHub Active Blue Accent */
+    --primary: 215 95% 58%;         /* #2F81F7 */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 185 90% 50%;
-    --secondary-foreground: 224 71% 4%;
+    /* GitHub Grey Secondary Muted Accent */
+    --secondary: 220 15% 15%;       /* #21262D */
+    --secondary-foreground: 210 40% 93%;
 
-    --muted: 217 33% 14%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 15% 15%;           /* #21262D */
+    --muted-foreground: 212 9% 58%;  /* #8B949E (Soft secondary text) */
 
-    --accent: 38 92% 50%;
-    --accent-foreground: 224 71% 4%;
+    /* Secondary Accent (GitHub Green) */
+    --accent: 128 49% 49%;          /* #3FB950 */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 210 40% 98%;
+    /* Danger Accent (GitHub Red) */
+    --destructive: 3 93% 62%;       /* #F85149 */
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 217 33% 14%;
-    --input: 217 33% 14%;
-    --ring: 250 95% 76%;
+    --border: 212 12% 21%;          /* #30363D (Subtle clean borders) */
+    --input: 212 12% 21%;           /* #30363D */
+    --ring: 215 95% 58%;            /* #2F81F7 */
 
-    --gradient-primary: linear-gradient(135deg, hsl(250 95% 76%) 0%, hsl(185 90% 50%) 100%);
-    --gradient-hero: linear-gradient(135deg, hsl(224 71% 2%) 0%, hsl(224 71% 4%) 50%, hsl(250 60% 8%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(224 71% 6%) 0%, hsl(224 71% 4%) 100%);
+    --radius: 0.375rem;             /* 6px (matching GitHub standard) */
 
-    --sidebar-background: 224 71% 4%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 250 95% 76%;
-    --sidebar-primary-foreground: 224 71% 4%;
-    --sidebar-accent: 224 71% 10%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 217 33% 14%;
-    --sidebar-ring: 250 95% 76%;
+    /* Standard solid theme gradients */
+    --gradient-primary: linear-gradient(180deg, hsl(215 95% 58%) 0%, hsl(215 95% 58%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsl(220 18% 7%) 0%, hsl(220 18% 7%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(220 18% 11%) 0%, hsl(220 18% 11%) 100%);
+    --gradient-accent: linear-gradient(180deg, hsl(220 15% 15%) 0%, hsl(220 15% 15%) 100%);
+
+    /* Flat, clean shadow values (no neon halos) */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 12px 16px -4px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 24px 32px -8px rgba(0, 0, 0, 0.6), 0 8px 16px -4px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 0 0 transparent; /* Disables glowing shadow effects */
+
+    --sidebar-background: 220 18% 11%;
+    --sidebar-foreground: 212 9% 58%;
+    --sidebar-primary: 215 95% 58%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 210 40% 93%;
+    --sidebar-border: 212 12% 21%;
+    --sidebar-ring: 215 95% 58%;
   }
 }
 
 @layer base {
   * {
-    @apply border-border transition-colors duration-200;
+    @apply border-border/70 transition-colors duration-150;
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary/25 selection:text-white;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-semibold tracking-tight;
+    @apply font-sans font-semibold tracking-tight;
   }
 
-  /* Custom Sleek Scrollbar */
+  /* Custom Minimalist Scrollbar */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/35 transition-colors;
+    @apply bg-border hover:bg-muted-foreground/30 rounded-full transition-colors;
   }
 }
 
 @layer components {
-  /* Glassmorphic Utilities */
-  .glass-effect {
-    @apply bg-background/70 backdrop-blur-xl border border-border/40;
-  }
-
-  .glass-card {
-    @apply bg-card/65 backdrop-blur-lg border border-border/30 hover:border-primary/20 shadow-md transition-all duration-300;
-  }
-  
-  .card-hover {
-    @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20;
-  }
-  
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
-  }
-
-  .text-gradient-indigo-cyan {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 dark:from-indigo-400 dark:via-purple-400 dark:to-cyan-400;
-  }
-  
-  .btn-shine {
-    @apply relative overflow-hidden;
-  }
-  
-  .btn-shine::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full;
-    animation: shine 3.5s infinite;
-  }
-  
-  @keyframes shine {
-    100% {
-      transform: translateX(100%);
-    }
-  }
-  
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
-  }
-
-  /* Dynamic Glow Backdrop */
+  /* Disable AI-generated glowing backdrop effects */
   .glow-orb {
-    @apply absolute rounded-full filter blur-3xl opacity-20 dark:opacity-25 animate-float;
+    display: none !important;
+  }
+
+  /* Remove flashy overlay animations and shiny buttons */
+  .btn-shine::before {
+    display: none !important;
+  }
+
+  .animate-float {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* Clean solid cards matching GitHub Dark */
+  .glass-card, .glass-effect {
+    background-color: hsl(var(--card)) !important;
+    border-color: hsl(var(--border)) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: var(--shadow-sm) !important;
+  }
+
+  .card-hover, .card-hover-elevation {
+    transition: all 0.2s ease !important;
+  }
+
+  .card-hover:hover, .card-hover-elevation:hover {
+    transform: none !important;
+    border-color: hsl(var(--primary) / 0.5) !important;
+    box-shadow: var(--shadow-md) !important;
+  }
+
+  .subtle-grid {
+    background-image: 
+      linear-gradient(to right, hsl(var(--border) / 0.12) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.12) 1px, transparent 1px);
+    background-size: 44px 44px;
   }
 }

@@ -30,18 +30,7 @@ This project is built using:
 
 ---
 
-## 🧑‍💻 How to Edit This Project
-
-### 🔹 Option 1: Edit using Lovable
-You can modify the project directly using Lovable.
-
-- Open the Lovable project
-- Make changes using prompts
-- All updates are auto-committed to GitHub
-
----
-
-### 🔹 Option 2: Run Locally (Recommended)
+## 🧑‍💻 How to Run Locally
 
 #### Prerequisites
 - Node.js

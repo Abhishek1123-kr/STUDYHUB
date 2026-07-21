@@ -87,14 +87,10 @@ export function Header() {
             <div className="flex items-center gap-3">
               <span className="text-sm font-medium text-muted-foreground max-w-[120px] truncate">{user.email}</span>
               <Button variant="outline" size="sm" className="rounded-xl border-border/50 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all" onClick={async () => {
-                if (confirm('Are you sure you want to sign out?')) {
-                  try {
-                    await signOut();
-                    navigate('/', { replace: true });
-                    console.log('🧭 Navigated to home after sign out');
-                  } catch (err) {
-                    alert('Sign out failed: ' + (err as Error).message);
-                  }
+                try {
+                  await signOut();
+                } catch (err) {
+                  alert('Sign out failed: ' + (err as Error).message);
                 }
               }}>
                 Sign Out
@@ -165,14 +161,10 @@ export function Header() {
               {user ? (
                 <Button variant="outline" size="sm" className="w-full rounded-xl hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-colors" onClick={async () => {
                   setIsMenuOpen(false);
-                  if (confirm('Are you sure you want to sign out?')) {
-                    try {
-                      await signOut();
-                      navigate('/', { replace: true });
-                      console.log('🧭 Navigated to home after sign out (mobile)');
-                    } catch (err) {
-                      alert('Sign out failed: ' + (err as Error).message);
-                    }
+                  try {
+                    await signOut();
+                  } catch (err) {
+                    alert('Sign out failed: ' + (err as Error).message);
                   }
                 }}>
                   Sign Out

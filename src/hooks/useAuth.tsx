@@ -130,13 +130,19 @@ useEffect(() => {
   const signOut = async () => {
     console.log('🔐 signOut: Called');
     try {
-      const { error: signOutError } = await supabase.auth.signOut();
-      if (signOutError) {
-        console.error('🔐 supabase.auth.signOut error:', signOutError);
+      // Clear localStorage auth keys first to ensure client is logged out immediately
+      for (const key of Object.keys(localStorage)) {
+        if (key.startsWith('sb-')) {
+          localStorage.removeItem(key);
+        }
       }
 
-      // Note: removeSession not available in client - skip
-      console.log('🔐 Skipped removeSession (client-side)');
+      // Try to notify Supabase server, but don't let it block local sign out
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        console.warn('🔐 supabase.auth.signOut request failed:', err);
+      }
       
       // Force state reset
       setSession(null);
@@ -145,17 +151,11 @@ useEffect(() => {
       
       console.log('🔐 signOut: Cleared local state');
 
-      // Prod: Force reload after delay to ensure session fully cleared
-      if (import.meta.env.PROD) {
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 500);
-      }
+      // Force reload to completely clear memory/state
+      window.location.href = '/';
     } catch (err) {
       console.error('🔐 signOut failed:', err);
-      // Fallback reload
       window.location.href = '/';
-      throw err;
     }
   };
 

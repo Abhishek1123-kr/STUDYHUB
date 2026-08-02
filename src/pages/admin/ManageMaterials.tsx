@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Layout } from '@/components/layout/Layout';
 import { Breadcrumbs } from '@/components/ui/breadcrumbs';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -45,6 +44,58 @@ const ManageMaterials = () => {
     material_type: 'notes' as MaterialType,
   });
 
+  /**
+   * Resilient upload function with dynamic timeout, session refresh, and retry logic.
+   * Prevents infinite loading when browser tabs are throttled or network stalls.
+   */
+  const uploadFileWithRetry = async (
+    filePath: string,
+    fileToUpload: File,
+    maxRetries = 3
+  ) => {
+    // Dynamic timeout: at least 45 seconds, plus 30s per 10MB
+    const timeoutMs = Math.max(45000, Math.ceil(fileToUpload.size / (10 * 1024 * 1024)) * 30000);
+    let lastError: unknown = null;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        // Ensure Auth session is active and not expired before upload attempt
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData.session) {
+          await supabase.auth.refreshSession();
+        }
+
+        const uploadPromise = supabase.storage
+          .from('materials')
+          .upload(filePath, fileToUpload, { upsert: true });
+
+        let timerId: ReturnType<typeof setTimeout>;
+        const timeoutPromise = new Promise<{ data: null; error: Error }>((_, reject) => {
+          timerId = setTimeout(() => {
+            reject(new Error(`Upload request timed out on attempt ${attempt} of ${maxRetries}`));
+          }, timeoutMs);
+        });
+
+        try {
+          const result = await Promise.race([uploadPromise, timeoutPromise]);
+          if (result.error) throw result.error;
+          return result.data;
+        } finally {
+          clearTimeout(timerId!);
+        }
+      } catch (err: unknown) {
+        lastError = err;
+        console.warn(`Upload attempt ${attempt} failed:`, err);
+        if (attempt < maxRetries) {
+          toast.info(`Upload stalled or interrupted. Retrying (${attempt}/${maxRetries})...`);
+          await new Promise((res) => setTimeout(res, attempt * 1500));
+        }
+      }
+    }
+
+    throw lastError || new Error('Upload failed after multiple attempts');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedSubjectId || !file) {
@@ -54,38 +105,32 @@ const ManageMaterials = () => {
     setIsSaving(true);
 
     try {
-      // Upload file to storage
+      // 1. Upload file to storage with resilience
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
       const filePath = `${selectedSubjectId}/${fileName}`;
 
-      const { error: uploadError } = await supabase.storage
-        .from('materials')
-        .upload(filePath, file);
+      await uploadFileWithRetry(filePath, file);
 
-      if (uploadError) throw uploadError;
+      // 2. Get public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('materials').getPublicUrl(filePath);
 
-      // Get public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('materials')
-        .getPublicUrl(filePath);
+      // 3. Create material record in database
+      const { error: insertError } = await supabase.from('materials').insert({
+        title: formData.title,
+        description: formData.description,
+        material_type: formData.material_type,
+        subject_id: selectedSubjectId,
+        file_url: publicUrl,
+        file_name: file.name,
+        file_size: file.size,
+        file_type: file.type,
+        order_index: orderIndex,
+      });
 
-      // Create material record
-      const { error } = await supabase
-        .from('materials')
-        .insert({
-          title: formData.title,
-          description: formData.description,
-          material_type: formData.material_type,
-          subject_id: selectedSubjectId,
-          file_url: publicUrl,
-          file_name: file.name,
-          file_size: file.size,
-          file_type: file.type,
-          order_index: orderIndex,
-        });
-
-      if (error) throw error;
+      if (insertError) throw insertError;
 
       toast.success('Material uploaded successfully');
       queryClient.invalidateQueries({ queryKey: ['materials'] });
@@ -93,9 +138,12 @@ const ManageMaterials = () => {
       setFormData({ title: '', description: '', material_type: 'notes' });
       setFile(null);
       setOrderIndex(1);
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to upload material');
+    } catch (error: unknown) {
+      console.error('Upload process error:', error);
+      const message = error instanceof Error ? error.message : 'Failed to upload material. Please try again.';
+      toast.error(message);
     } finally {
+      // Always guarantee loading state is cleared
       setIsSaving(false);
     }
   };
@@ -108,8 +156,9 @@ const ManageMaterials = () => {
     try {
       await deleteMaterial.mutateAsync(materialId);
       toast.success('Material deleted successfully');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to delete material');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to delete material';
+      toast.error(message);
     }
   };
 
@@ -153,31 +202,39 @@ const ManageMaterials = () => {
                     required
                   />
                 </div>
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium">Unit Order</label>
-                  <input
-                    type="number"
-                    min={1}
-                    value={orderIndex}
-                    onChange={(e) => setOrderIndex(Number(e.target.value))}
-                    className="w-full rounded border px-3 py-2" />
-
-                  <Label htmlFor="type">Material Type</Label>
-                  <Select
-                    value={formData.material_type}
-                    onValueChange={(v) => setFormData({ ...formData, material_type: v as MaterialType })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.entries(materialTypeLabels).map(([value, label]) => (
-                        <SelectItem key={value} value={value}>
-                          {label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="orderIndex">Unit Order / Index</Label>
+                    <Input
+                      id="orderIndex"
+                      type="number"
+                      min={1}
+                      value={orderIndex}
+                      onChange={(e) => setOrderIndex(Number(e.target.value))}
+                      placeholder="e.g. 1"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="type">Material Type</Label>
+                    <Select
+                      value={formData.material_type}
+                      onValueChange={(v) =>
+                        setFormData({ ...formData, material_type: v as MaterialType })
+                      }
+                    >
+                      <SelectTrigger id="type">
+                        <SelectValue placeholder="Select type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(materialTypeLabels).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="description">Description (Optional)</Label>
@@ -210,7 +267,7 @@ const ManageMaterials = () => {
                 </div>
                 <Button type="submit" className="w-full" disabled={isSaving}>
                   {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Upload Material
+                  {isSaving ? 'Uploading Material...' : 'Upload Material'}
                 </Button>
               </form>
             </DialogContent>
@@ -221,11 +278,14 @@ const ManageMaterials = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <div className="space-y-2">
             <Label>Select Course</Label>
-            <Select value={selectedCourseId} onValueChange={(v) => {
-              setSelectedCourseId(v);
-              setSelectedSemesterId('');
-              setSelectedSubjectId('');
-            }}>
+            <Select
+              value={selectedCourseId}
+              onValueChange={(v) => {
+                setSelectedCourseId(v);
+                setSelectedSemesterId('');
+                setSelectedSubjectId('');
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Choose a course" />
               </SelectTrigger>
@@ -242,7 +302,10 @@ const ManageMaterials = () => {
             <Label>Select Semester</Label>
             <Select
               value={selectedSemesterId}
-              onValueChange={(v) => { setSelectedSemesterId(v); setSelectedSubjectId(''); }}
+              onValueChange={(v) => {
+                setSelectedSemesterId(v);
+                setSelectedSubjectId('');
+              }}
               disabled={!selectedCourseId}
             >
               <SelectTrigger>

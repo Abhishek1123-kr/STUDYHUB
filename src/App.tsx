@@ -7,7 +7,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import About from '@/pages/About';
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 // Pages\\\
 import Index from "./pages/Index";
 import Courses from "./pages/Courses";
@@ -29,6 +29,7 @@ const App = () => (
     <ThemeProvider defaultTheme="system" storageKey="studyhub-theme">
       <AuthProvider>
         <TooltipProvider>
+          <SpeedInsights />
           <Toaster />
           <Sonner />
           <BrowserRouter>

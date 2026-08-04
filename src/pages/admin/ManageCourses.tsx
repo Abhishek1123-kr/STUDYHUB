@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dialog';
 
 const ManageCourses = () => {
-  const { data: courses, isLoading } = useCourses();
+  const { data: courses, isLoading, isError, error, refetch } = useCourses();
   const deleteCourse = useDeleteCourse();
   const queryClient = useQueryClient();
 
@@ -154,6 +154,15 @@ const ManageCourses = () => {
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : isError ? (
+          <div className="text-center py-12 bg-destructive/10 rounded-lg p-6">
+            <p className="text-destructive font-medium mb-4">
+              Failed to load courses: {error instanceof Error ? error.message : 'Unknown error'}
+            </p>
+            <Button onClick={() => refetch()} variant="outline">
+              Retry Loading Courses
+            </Button>
           </div>
         ) : (
           <div className="grid gap-4">

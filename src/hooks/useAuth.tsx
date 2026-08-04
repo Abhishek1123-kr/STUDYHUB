@@ -42,71 +42,90 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-useEffect(() => {
-    console.log('🔐 useAuth: Initializing auth...');
+  useEffect(() => {
+    console.log('🔐 useAuth: Initializing auth state listener...');
     
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-      console.log('🔐 useAuth: Auth state change:', event, session?.user?.email || 'no user');
-      if (event === 'SIGNED_OUT') {
-        console.log('🔐 SIGNED_OUT event received, state should update');
-      }
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          console.log('🔐 useAuth: Checking admin role for user:', session.user.id);
-          try {
-            const adminStatus = await checkAdminRole(session.user.id);
-            console.log('🔐 useAuth: Admin status:', adminStatus);
-            setIsAdmin(adminStatus);
-          } catch (err) {
-            console.error('🔐 useAuth: Admin check failed:', err);
-            setIsAdmin(false);
-          }
-        } else {
-          console.log('🔐 useAuth: No user, setting isAdmin false');
-          setIsAdmin(false);
+    // Safety fallback: Ensure isLoading never hangs indefinitely
+    const safetyTimer = setTimeout(() => {
+      setIsLoading((prev) => {
+        if (prev) {
+          console.warn('🔐 useAuth: Safety fallback timeout triggered (5s), setting isLoading false');
         }
-        
-        setIsLoading(false);
+        return false;
+      });
+    }, 5000);
+
+    // 1. Synchronous auth state listener (NO async awaits inside to prevent Supabase auth lock deadlock)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, currentSession) => {
+        console.log('🔐 useAuth: Auth state change event:', event, currentSession?.user?.email || 'no user');
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+
+        if (!currentSession?.user) {
+          setIsAdmin(false);
+          setIsLoading(false);
+        }
       }
     );
 
-    console.log('🔐 Refresh debug: localStorage auth token exists?', !!localStorage.getItem('sb-' + (import.meta.env.VITE_SUPABASE_URL?.split('/')[3] || 'unknown') + '-auth-token'));
-    // THEN get initial session
-    supabase.auth.getSession().then(async ({ data: { session }, error }) => {
+    // 2. Initial session restoration check
+    supabase.auth.getSession().then(({ data: { session: currentSession }, error }) => {
       if (error) {
-      console.error('🔐 useAuth: getSession error:', error);
+        console.error('🔐 useAuth: getSession error:', error);
+        setIsLoading(false);
       } else {
-        console.log('🔐 useAuth: Initial session RESTORED:', session?.user?.email || 'no session');
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          console.log('🔐 useAuth: Checking initial admin role for:', session.user.id);
-          try {
-            const adminStatus = await checkAdminRole(session.user.id);
-            console.log('🔐 useAuth: Initial admin status:', adminStatus);
-            setIsAdmin(adminStatus);
-          } catch (err) {
-            console.error('🔐 useAuth: Initial admin check failed:', err);
-            setIsAdmin(false);
-          }
+        console.log('🔐 useAuth: Initial session RESTORED:', currentSession?.user?.email || 'no session');
+        setSession(currentSession);
+        setUser(currentSession?.user ?? null);
+        if (!currentSession?.user) {
+          setIsAdmin(false);
+          setIsLoading(false);
         }
       }
-      setIsLoading(false);
-    }).catch(err => {
-      console.error('🔐 useAuth: getSession promise rejected:', err);
+    }).catch((err) => {
+      console.error('🔐 useAuth: getSession rejected:', err);
       setIsLoading(false);
     });
 
     return () => {
-      console.log('🔐 useAuth: Cleaning up subscription');
+      console.log('🔐 useAuth: Cleaning up subscription and timers');
+      clearTimeout(safetyTimer);
       subscription.unsubscribe();
     };
   }, []);
+
+  // 3. Decoupled admin role verification - executes outside of onAuthStateChange lock
+  useEffect(() => {
+    let isMounted = true;
+
+    if (!user) {
+      setIsAdmin(false);
+      setIsLoading(false);
+      return;
+    }
+
+    console.log('🔐 useAuth: Verifying admin role for user:', user.id);
+    checkAdminRole(user.id)
+      .then((adminStatus) => {
+        if (isMounted) {
+          console.log('🔐 useAuth: Admin role restored status:', adminStatus);
+          setIsAdmin(adminStatus);
+          setIsLoading(false);
+        }
+      })
+      .catch((err) => {
+        console.error('🔐 useAuth: Admin role verification error:', err);
+        if (isMounted) {
+          setIsAdmin(false);
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.id]);
 
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({

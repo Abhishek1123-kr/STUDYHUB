@@ -80,23 +80,9 @@ export function useSubjects(semesterId: string | undefined) {
       console.log('📚 Subjects query for semester:', semesterId);
       if (!semesterId) return [];
 
-      // Get current user session
-      const { data: { session } } = await supabase.auth.getSession();
-      const user = session?.user;
+      // Get current user details safely
+      const { data: { user } } = await supabase.auth.getUser();
       const branch = (user?.user_metadata as any)?.branch as string | undefined;
-
-      let isAdmin = false;
-      if (user) {
-        const { data: adminData } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .eq('role', 'admin')
-          .maybeSingle();
-        isAdmin = !!adminData;
-      }
-
-      console.log('📚 User auth:', { branch, isAdmin });
 
       // 1. Get current semester
       const { data: currentSemData, error: semError } = await supabase
@@ -164,7 +150,7 @@ export function useSubjects(semesterId: string | undefined) {
       // ✅ 5. FINAL FILTER (IMPORTANT)
       let filteredSubjects = uniqueSubjects;
 
-      if (branch && !isAdmin) {
+      if (branch) {
         filteredSubjects = uniqueSubjects.filter((subject: Subject) =>
           subject.branches &&
           (subject.branches.includes('ALL') || subject.branches.includes(branch))

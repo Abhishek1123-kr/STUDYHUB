@@ -35,11 +35,6 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
   }
 
   if (requireAdmin && !isAdmin) {
-    if (import.meta.env.DEV) {
-      console.log('🔒 DEV: Bypassing admin check for testing');
-      return <>{children}</>;
-    }
-    
     console.log('🔒 Access denied - not admin');
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -57,22 +52,5 @@ export function ProtectedRoute({ children, requireAdmin = false }: ProtectedRout
   }
 
   console.log('🔒 Access granted');
-  return <>{children}</>;
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-
-  // Removed duplicate check - handled above
-
-
   return <>{children}</>;
 }

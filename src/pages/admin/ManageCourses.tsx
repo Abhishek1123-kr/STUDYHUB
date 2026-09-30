@@ -26,6 +26,7 @@ const ManageCourses = () => {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [editingCourseId, setEditingCourseId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     code: '',
@@ -33,28 +34,66 @@ const ManageCourses = () => {
     color: '#1e40af',
   });
 
+  const handleEditClick = (course: any) => {
+    setEditingCourseId(course.id);
+    setFormData({
+      name: course.name,
+      code: course.code,
+      description: course.description || '',
+      color: course.color || '#1e40af',
+    });
+    setIsDialogOpen(true);
+  };
+
+  const resetForm = () => {
+    setEditingCourseId(null);
+    setFormData({ name: '', code: '', description: '', color: '#1e40af' });
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setIsDialogOpen(open);
+    if (!open) {
+      resetForm();
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
 
     try {
-      const { error } = await supabase
-        .from('courses')
-        .insert({
-          name: formData.name,
-          code: formData.code,
-          description: formData.description,
-          color: formData.color,
-        });
+      if (editingCourseId) {
+        const { error } = await supabase
+          .from('courses')
+          .update({
+            name: formData.name,
+            code: formData.code,
+            description: formData.description,
+            color: formData.color,
+          })
+          .eq('id', editingCourseId);
+          
+        if (error) throw error;
+        toast.success('Course updated successfully');
+      } else {
+        const { error } = await supabase
+          .from('courses')
+          .insert({
+            name: formData.name,
+            code: formData.code,
+            description: formData.description,
+            color: formData.color,
+          });
 
-      if (error) throw error;
+        if (error) throw error;
+        toast.success('Course created successfully');
+      }
 
-      toast.success('Course created successfully');
       queryClient.invalidateQueries({ queryKey: ['courses'] });
       setIsDialogOpen(false);
-      setFormData({ name: '', code: '', description: '', color: '#1e40af' });
+      resetForm();
     } catch (error: any) {
-      toast.error(error.message || 'Failed to create course');
+      toast.error(error.message || 'Failed to save course');
     } finally {
       setIsSaving(false);
     }
@@ -91,16 +130,16 @@ const ManageCourses = () => {
             </p>
           </div>
 
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-              <Button className="gap-2">
+              <Button className="gap-2" onClick={() => resetForm()}>
                 <Plus className="h-4 w-4" />
                 Add Course
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Add New Course</DialogTitle>
+                <DialogTitle>{editingCourseId ? 'Edit Course' : 'Add New Course'}</DialogTitle>
               </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
@@ -144,7 +183,7 @@ const ManageCourses = () => {
                 </div>
                 <Button type="submit" className="w-full" disabled={isSaving}>
                   {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-                  Create Course
+                  {editingCourseId ? 'Update Course' : 'Create Course'}
                 </Button>
               </form>
             </DialogContent>
@@ -183,7 +222,12 @@ const ManageCourses = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm" className="gap-1">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="gap-1"
+                        onClick={() => handleEditClick(course)}
+                      >
                         <Edit className="h-4 w-4" />
                         Edit
                       </Button>

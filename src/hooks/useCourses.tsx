@@ -286,8 +286,10 @@ export function useIncrementDownload() {
   return useMutation({
     mutationFn: async (materialId: string) => {
       // 1. Try to increment via security definer RPC (recommended)
-      const { error: rpcError } = await supabase
-        .rpc('increment_download_count', { material_id: materialId });
+      const { error: rpcError } = await (supabase.rpc as any)(
+        'increment_download_count',
+        { material_id: materialId }
+      );
 
       if (rpcError) {
         console.warn('RPC function increment_download_count not found or failed, falling back to direct update:', rpcError.message);

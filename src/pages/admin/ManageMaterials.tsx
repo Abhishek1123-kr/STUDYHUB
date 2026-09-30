@@ -13,6 +13,7 @@ import { Plus, Trash2, Loader2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { MaterialCard } from '@/components/materials/MaterialCard';
 import { materialTypeLabels, type MaterialType } from '@/types/database';
+import { MultiFileUpload } from '@/components/materials/MultiFileUpload';
 import {
   Dialog,
   DialogContent,
@@ -36,6 +37,7 @@ const ManageMaterials = () => {
   const queryClient = useQueryClient();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isBulkDialogOpen, setIsBulkDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
@@ -180,17 +182,40 @@ const ManageMaterials = () => {
             </p>
           </div>
 
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2" disabled={!selectedSubjectId}>
-                <Plus className="h-4 w-4" />
-                Upload Material
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg">
-              <DialogHeader>
-                <DialogTitle>Upload New Material</DialogTitle>
-              </DialogHeader>
+          <div className="flex items-center gap-3">
+            {/* Bulk Upload Dialog */}
+            <Dialog open={isBulkDialogOpen} onOpenChange={setIsBulkDialogOpen}>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="gap-2" disabled={!selectedSubjectId}>
+                  <Upload className="h-4 w-4" />
+                  Bulk Upload
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+                <DialogHeader>
+                  <DialogTitle>Bulk Upload Study Materials</DialogTitle>
+                </DialogHeader>
+                <MultiFileUpload
+                  subjectId={selectedSubjectId}
+                  onUploadSuccess={() => {
+                    queryClient.invalidateQueries({ queryKey: ['materials'] });
+                  }}
+                />
+              </DialogContent>
+            </Dialog>
+
+            {/* Single Upload Dialog */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="gap-2" disabled={!selectedSubjectId}>
+                  <Plus className="h-4 w-4" />
+                  Upload Material
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>Upload New Material</DialogTitle>
+                </DialogHeader>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="title">Title</Label>
@@ -272,6 +297,7 @@ const ManageMaterials = () => {
               </form>
             </DialogContent>
           </Dialog>
+          </div>
         </div>
 
         {/* Filters */}
